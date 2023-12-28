@@ -1,0 +1,91 @@
+@for (progressInfo of progressInfos; track $index) {
+<div>
+  <span>{{ progressInfo.fileName }}</span>
+  <mat-toolbar class="progress-bar">
+    <mat-progress-bar
+      color="accent"
+      [value]="progressInfo.value"
+    ></mat-progress-bar>
+    <span class="progress">{{ progressInfo.value }}%</span>
+  </mat-toolbar>
+</div>
+}
+
+<mat-form-field>
+  <div>
+    <mat-toolbar>
+      <input
+        matInput
+        [value]="
+          selectedFileNames.length
+            ? selectedFileNames.join(', ')
+            : 'Select Images'
+        "
+      />
+
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="!selectedFiles"
+        (click)="uploadFiles()"
+      >
+        Upload
+      </button>
+    </mat-toolbar>
+
+    <input
+      type="file"
+      id="fileInput"
+      name="fileInput"
+      accept="image/*"
+      multiple
+      (change)="selectFiles($event)"
+    />
+  </div>
+</mat-form-field>
+
+<div class="previews">
+  @for (preview of previews; track $index) {
+  <img [src]="preview" class="preview" />
+  }
+</div>
+
+@if (message.length) {
+<div class="message">
+  <ul>
+    @for (msg of message; track $index) {
+    <li>{{ msg }}</li>
+    }
+  </ul>
+</div>
+}
+
+<button mat-flat-button color="primary" (click)="getList()">Get Images</button>
+
+@if (showList) {
+<mat-card class="list-card">
+  <mat-card-header>
+    <mat-card-title>List of Images</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-grid-list cols="2" rowHeight="60px">
+      @for (image of imageInfos | async; track image.name) {
+      <div>
+        <mat-grid-tile>
+          <a href="{{ image.url }}" class="text-inside-grid">
+            {{ image.name }}
+          </a>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <img
+            src="{{ image.url }}"
+            alt="{{ image.name }}"
+            class="image-inside-grid"
+          />
+        </mat-grid-tile>
+      </div>
+      }
+    </mat-grid-list>
+  </mat-card-content>
+</mat-card>
+}
